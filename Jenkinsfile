@@ -42,6 +42,7 @@ pipeline {
       steps {
         sh 'scp rest-api root@167.71.206.43:/root/rest-api'
         sh 'ssh root@167.71.206.43'
+        sh 'pwd'
         sh 'cd /root/rest-api'
         sh 'fuser -n tcp -k 54321'
 
