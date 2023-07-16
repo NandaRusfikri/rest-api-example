@@ -38,9 +38,26 @@ pipeline {
       }
     }
 
-    stage('Deploy Server Development') {
+    stage('Deploy Server Production') {
+      when {
+        expression {
+          return env.GIT_BRANCH == 'origin/dev';
+        }
+      }
       steps {
+        sh 'fuser -n tcp -k 54321'
+        sh 'nohup ./rest-api > api.log 2>&1 &'
 
+      }
+    }
+
+    stage('Deploy Server Production') {
+      when {
+        expression {
+          return env.GIT_BRANCH == 'origin/main';
+        }
+      }
+      steps {
         sh "ssh root@167.71.206.43 'sudo fuser -n tcp -k 54321'"
         sh 'scp rest-api root@167.71.206.43:/root/rest-api/'
         sh "ssh root@167.71.206.43 'sudo /root/rest-api/run.sh'"
