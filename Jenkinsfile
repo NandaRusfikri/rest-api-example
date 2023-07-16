@@ -41,12 +41,8 @@ pipeline {
     stage('Deploy Server Development') {
       steps {
         sh 'scp rest-api root@167.71.206.43:/root/rest-api'
-        sh 'ssh root@167.71.206.43'
-        sh 'pwd'
-        sh 'cd /root/rest-api'
-        sh 'fuser -n tcp -k 54321'
+        sh "ssh root@167.71.206.43 'cd /root/rest-api && fuser -n tcp -k 54321 && nohup ./rest-api > api.log &'"
 
-        sh 'nohup ./rest-api > api.log &'
       }
     }
 
