@@ -46,7 +46,7 @@ pipeline {
         }
       }
       steps {
-        sh 'sudo ./script_dev.sh'
+        sh './script_dev.sh'
       }
     }
 
