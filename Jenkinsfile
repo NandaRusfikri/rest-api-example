@@ -38,7 +38,7 @@ pipeline {
       }
     }
 
-    stage('Deploy Server Production') {
+    stage('Deploy Server Development') {
       when {
         expression {
           return env.GIT_BRANCH == 'origin/dev';
