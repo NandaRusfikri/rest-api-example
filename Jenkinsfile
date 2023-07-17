@@ -45,7 +45,7 @@ pipeline {
         }
       }
       steps {
-        sh 'fuser -n tcp -k 54321'
+        sh 'sudo fuser -n tcp -k 54321'
         sh 'nohup ./rest-api > api.log 2>&1 &'
 
       }
