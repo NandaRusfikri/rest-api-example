@@ -35,6 +35,7 @@ pipeline {
 
         sh 'CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-s -w" -o rest-api main.go'
         sh 'chmod +x rest-api'
+        sh 'chmod +x script_dev.sh'
       }
     }
 
@@ -45,9 +46,7 @@ pipeline {
         }
       }
       steps {
-        sh 'sudo fuser -n tcp -k 54321'
-        sh 'nohup ./rest-api > api.log 2>&1 &'
-
+        sh 'sudo ./script_dev.sh'
       }
     }
 

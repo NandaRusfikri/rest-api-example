@@ -13,7 +13,7 @@ import (
 
 var (
 	SERVICE_NAME = ""
-	VERSION      = "1.0.8"
+	VERSION      = "1.0.9"
 	PORT         = 0
 )
 
