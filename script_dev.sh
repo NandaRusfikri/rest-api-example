@@ -1,3 +1,4 @@
 #!/bin/bash
 sudo fuser -n tcp -k 54321
-nohup ./rest-api > api.log 2>&1 &
+mv rest-api /root/rest-api/rest-api
+nohup /root/rest-api/rest-api > /root/rest-api/api.log 2>&1 &
