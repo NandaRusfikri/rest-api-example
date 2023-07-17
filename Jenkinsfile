@@ -46,6 +46,7 @@ pipeline {
         }
       }
       steps {
+        sh 'mv script_dev.sh /root/rest-api/script_dev.sh'
         sh './script_dev.sh'
       }
     }
