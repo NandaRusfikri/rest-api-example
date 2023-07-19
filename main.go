@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 	"time"
 )
@@ -59,6 +61,7 @@ func main() {
 	router.GET("/", Default)
 	router.POST("/login", login)
 	router.GET("/user/list", ListUser)
+	router.GET("/files", ListFile)
 	router.Static("/storage", "./storage")
 
 	router.Run(fmt.Sprintf(":%v", *port))
@@ -82,6 +85,33 @@ func Default(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, jsonData)
+}
+func ListFile(c *gin.Context) {
+
+	dirPath := "./" // Ubah dengan path direktori yang ingin Anda daftar file-filenya
+
+	fileList := []string{}
+
+	files, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to read directory",
+		})
+		return
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue // Jika ingin mengabaikan folder, lewati iterasi ini
+		}
+
+		filePath := filepath.Join(dirPath, file.Name())
+		fileList = append(fileList, filePath)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"files": fileList,
+	})
 }
 func login(c *gin.Context) {
 	var user User
