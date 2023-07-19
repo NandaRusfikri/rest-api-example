@@ -59,6 +59,7 @@ func main() {
 	router.GET("/", Default)
 	router.POST("/login", login)
 	router.GET("/user/list", ListUser)
+	router.Static("/storage", "./storage")
 
 	router.Run(fmt.Sprintf(":%v", *port))
 
