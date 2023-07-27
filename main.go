@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -28,6 +30,11 @@ func main() {
 	serviceName := flag.String("name", "API-Example", "Service Name")
 	port := flag.Int("p", 54321, "Port")
 
+	loc, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		log.Fatal("main() - time - error: ", err)
+	}
+	time.Local = loc
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Penggunaan: %s [OPTIONS]\n", os.Args[0])
 		fmt.Fprintln(os.Stderr, "Version APP :", VERSION)
@@ -60,6 +67,7 @@ func main() {
 
 	router.GET("/", Default)
 	router.POST("/login", login)
+	router.POST("/free_json", FreeJson)
 	router.GET("/user/list", ListUser)
 	router.GET("/files", ListFile)
 	router.Static("/storage", "./storage")
@@ -68,13 +76,34 @@ func main() {
 
 }
 
-func Default(c *gin.Context) {
-	loc, errLoc := time.LoadLocation("Asia/Jakarta")
-	if errLoc != nil {
-		fmt.Println("error load location ==> ", errLoc.Error())
+type InputJson interface{}
+
+func FreeJson(c *gin.Context) {
+	var Input InputJson
+	if err := c.ShouldBindJSON(&Input); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": fmt.Sprintf("Invalid request : %v", err.Error()),
+		})
+		return
 	}
-	fmt.Println("loc ", loc)
-	now := time.Now().In(loc)
+
+	e, err := json.Marshal(Input)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Json INPUT : ", string(e))
+
+	jsonData := map[string]interface{}{
+		"message":    "Success",
+		"your_input": Input,
+	}
+
+	c.JSON(http.StatusOK, jsonData)
+}
+
+func Default(c *gin.Context) {
+	now := time.Now()
 	jsonData := map[string]interface{}{
 		"service_name": SERVICE_NAME,
 		"version":      VERSION,
